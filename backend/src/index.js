@@ -1,4 +1,3 @@
-
 import express from "express";
 import dotenv from "dotenv";
 import { connectDB } from "./lib/db.js";
@@ -7,6 +6,7 @@ import { clerkMiddleware } from "@clerk/express";
 import cors from "cors";
 import fs from "fs";
 import path from "path";
+import job from "./lib/cron.js";
 
 dotenv.config();
 
@@ -47,4 +47,8 @@ if (fs.existsSync(publicDir)) {
 app.listen(PORT, () => {
   connectDB();
   console.log(`Server is running at http://localhost:${PORT}`);
+
+  if (process.env.NODE_ENV === "production") {
+    job.start();
+  }
 });
